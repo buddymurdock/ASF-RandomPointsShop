@@ -379,7 +379,7 @@ internal sealed class RandomPointsShop : IASF, IBotConnection, IGitHubPluginUpda
 	// returns everything the bot owns of the requested appids' community items (regardless of class), matched
 	// against a catalog entry by (appid, community_item_type) - the same pairing FreePointsShop itself uses to
 	// avoid re-redeeming an item the bot already has.
-	private static async Task<HashSet<(uint AppID, int ItemType)>> GetOwnedItemsAsync(Bot bot, string token, IReadOnlyCollection<uint> appIDs) {
+	private static async Task<HashSet<(uint AppID, int ItemType)>> GetOwnedItemsAsync(Bot bot, string token, HashSet<uint> appIDs) {
 		if (appIDs.Count == 0) {
 			return [];
 		}
