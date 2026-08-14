@@ -233,12 +233,18 @@ internal sealed class RandomPointsShop : IASF, IBotConnection, IGitHubPluginUpda
 
 		List<RewardItemRecord> catalog = await GetCatalogAsync(bot).ConfigureAwait(false);
 
+		// AllowedItemClasses is also sent as a query filter in RefreshCatalogAsync, but that's Steam
+		// honoring the request, not a guarantee - re-checking it here locally is what actually keeps an
+		// excluded class (e.g. animated avatars, which would silently hide RandomProfileAvatar's changes)
+		// out of the candidate pool if the server-side filter is ever a no-op.
 		List<RewardItemRecord> candidates = [
 			.. catalog.Where(
 				item => (item.Active == true) &&
 					(item.Type != BundleType) &&
 					(item.AppID != null) &&
 					(item.DefID != null) &&
+					(item.CommunityItemClass != null) &&
+					AllowedItemClasses.Contains(item.CommunityItemClass.Value) &&
 					TryGetPointCost(item, out _)
 			)
 		];
